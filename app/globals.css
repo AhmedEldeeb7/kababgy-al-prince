@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-cairo: 'Cairo', sans-serif;
+    --font-tajawal: 'Tajawal', sans-serif;
+  }
+
+  body {
+    background-color: #0D0D0D;
+    color: #F5EBDD;
+    font-family: var(--font-cairo), sans-serif;
+    overflow-x: hidden;
+    direction: rtl;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141414;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #383838;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4A72C;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(20, 20, 20, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 167, 44, 0.15);
+}
+
+.glass-card {
+  background: rgba(31, 31, 31, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card:hover {
+  border-color: rgba(212, 167, 44, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(212, 167, 44, 0.2);
+}
+
+/* Flame & Gold Glow Effects */
+.gold-glow-text {
+  text-shadow: 0 0 20px rgba(212, 167, 44, 0.4);
+}
+
+.red-glow-text {
+  text-shadow: 0 0 20px rgba(122, 31, 31, 0.6);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #D4A72C 0%, #AA8015 100%);
+  color: #0D0D0D;
+  font-weight: 700;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-gold:hover {
+  background: linear-gradient(135deg, #F3C649 0%, #D4A72C 100%);
+  box-shadow: 0 0 20px rgba(212, 167, 44, 0.5);
+  transform: translateY(-2px);
+}

@@ -2,9 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Flame, PhoneCall, MapPin, Clock, MessageSquare, ShieldCheck } from 'lucide-react';
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="bg-brand-dark-900 border-t border-brand-gold/20 text-brand-cream-muted pt-12 pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

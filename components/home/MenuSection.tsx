@@ -38,7 +38,7 @@ export default function MenuSection({ categories, products }: MenuSectionProps) 
   }, [products, selectedCategory, searchQuery, filterMode]);
 
   return (
-    <section id="menu-section" className="py-12 lg:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <section id="menu-section" className="py-8 sm:py-12 lg:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
       {/* Section Title */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-brand-gold/20 pb-6">
         <div className="space-y-2">
@@ -46,7 +46,7 @@ export default function MenuSection({ categories, products }: MenuSectionProps) 
             <Utensils className="w-3.5 h-3.5" />
             <span>قائمة كبابجي البرنس الأصيلة</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-brand-cream">
+          <h2 className="text-2xl sm:text-4xl font-black text-brand-cream">
             اختر أكلتك المفضلة 🔥
           </h2>
         </div>
@@ -96,7 +96,7 @@ export default function MenuSection({ categories, products }: MenuSectionProps) 
       </div>
 
       {/* Quick Filter Badges */}
-      <div className="flex items-center gap-2 text-xs">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="text-brand-cream-dim font-bold">تصفية حسب:</span>
         <button
           onClick={() => setFilterMode('all')}
@@ -150,7 +150,7 @@ export default function MenuSection({ categories, products }: MenuSectionProps) 
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {filteredProducts.map((prod) => (
             <ProductCard
               key={prod.id}

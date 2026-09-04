@@ -119,7 +119,7 @@ export default function OrderSuccessPage({ params, searchParams }: SuccessPagePr
         </div>
 
         {order.total && (
-          <div className="p-4 rounded-xl bg-brand-dark-900 border border-brand-gold/30 flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-brand-dark-900 border border-brand-gold/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span className="font-extrabold text-sm text-brand-cream">الإجمالي الكلي شامل التوصيل:</span>
             <span className="font-black text-xl text-brand-gold">{formatCurrency(order.total)}</span>
           </div>

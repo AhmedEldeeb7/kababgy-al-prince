@@ -1,6 +1,53 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
+
+@theme {
+  --color-brand-dark-900: #0D0D0D;
+  --color-brand-dark-800: #141414;
+  --color-brand-dark-700: #1F1F1F;
+  --color-brand-dark-600: #2A2A2A;
+  --color-brand-dark-500: #383838;
+
+  --color-brand-gold: #D4A72C;
+  --color-brand-gold-light: #F3C649;
+  --color-brand-gold-dark: #AA8015;
+  --color-brand-gold-glow: rgba(212, 167, 44, 0.2);
+
+  --color-brand-cream: #F5EBDD;
+  --color-brand-cream-muted: #C8BDAC;
+  --color-brand-cream-dim: #8C8375;
+
+  --color-brand-red: #7A1F1F;
+  --color-brand-red-bright: #B92B2B;
+  --color-brand-red-dark: #4A1212;
+
+  --font-cairo: var(--font-cairo), sans-serif;
+  --font-tajawal: var(--font-tajawal), sans-serif;
+
+  --shadow-gold: 0 4px 20px -2px rgba(212, 167, 44, 0.3);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+
+  --animate-flame-glow: flameGlow 3s ease-in-out infinite alternate;
+  --animate-fadeIn: fadeIn 0.25s ease-out forwards;
+
+  @keyframes flameGlow {
+    0% { opacity: 0.6; filter: drop-shadow(0 0 15px rgba(212, 167, 44, 0.4)); }
+    100% { opacity: 0.9; filter: drop-shadow(0 0 30px rgba(122, 31, 31, 0.7)); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
 
 @layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   :root {
     --font-cairo: 'Cairo', sans-serif;
     --font-tajawal: 'Tajawal', sans-serif;
@@ -12,6 +59,26 @@
     font-family: var(--font-cairo), sans-serif;
     overflow-x: hidden;
     direction: rtl;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  @media (max-width: 639px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
   }
 }
 
@@ -74,4 +141,10 @@
   background: linear-gradient(135deg, #F3C649 0%, #D4A72C 100%);
   box-shadow: 0 0 20px rgba(212, 167, 44, 0.5);
   transform: translateY(-2px);
+}
+
+@media (max-width: 639px) {
+  .mobile-safe-bottom {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
 }

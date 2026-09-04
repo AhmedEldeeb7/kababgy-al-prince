@@ -46,7 +46,10 @@ export default function CheckoutPage() {
       setIsLoadingZones(true);
       try {
         const branchId = selectedBranch?.id;
-        const zones = await getDeliveryZones(branchId);
+        let zones = await getDeliveryZones(branchId);
+        if (zones.length === 0) {
+          zones = await getDeliveryZones();
+        }
         setDeliveryZones(zones);
         if (zones.length > 0) {
           setSelectedZone(zones[0]);
@@ -179,10 +182,10 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8">
       {/* Title */}
       <div className="space-y-2 border-r-4 border-brand-gold pr-4">
-        <h1 className="text-3xl font-black text-brand-cream">إتمام الطلب والتوصيل 🛵</h1>
+        <h1 className="text-2xl sm:text-3xl font-black text-brand-cream">إتمام الطلب والتوصيل 🛵</h1>
         <p className="text-xs text-brand-cream-muted">
           ادخل عنوان التوصيل للتأكيد وإعداد رسالة الواتساب المباشرة مع المطعم.
         </p>
@@ -190,12 +193,12 @@ export default function CheckoutPage() {
 
       {/* Customer Memory Prompt */}
       {customerAddress && (
-        <div className="glass-panel p-4 rounded-2xl border border-brand-gold/30 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <div className="glass-panel p-4 rounded-2xl border border-brand-gold/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="min-w-0 flex items-start sm:items-center gap-3">
             <span className="text-2xl">👋</span>
-            <div>
-              <h4 className="font-extrabold text-sm text-brand-cream">أهلاً بيك! نستخدم آخر عنوان مسجل؟</h4>
-              <p className="text-xs text-brand-cream-muted">
+            <div className="min-w-0">
+              <h4 className="font-extrabold text-sm text-brand-cream break-words">أهلاً بيك! نستخدم آخر عنوان مسجل؟</h4>
+              <p className="text-xs text-brand-cream-muted break-words">
                 {customerAddress.area} - {customerAddress.street}
               </p>
             </div>
@@ -203,7 +206,7 @@ export default function CheckoutPage() {
           <button
             type="button"
             onClick={handleUseSavedAddress}
-            className="btn-gold px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm shrink-0"
+            className="btn-gold w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-extrabold shadow-sm shrink-0"
           >
             استخدام العنوان 📍
           </button>
@@ -222,7 +225,7 @@ export default function CheckoutPage() {
         {/* Left Form Column */}
         <div className="lg:col-span-7 space-y-6">
           {/* Customer Details Panel */}
-          <div className="glass-panel p-6 rounded-3xl border border-brand-gold/20 space-y-4">
+          <div className="glass-panel p-4 sm:p-6 rounded-3xl border border-brand-gold/20 space-y-4">
             <h3 className="text-lg font-black text-brand-cream flex items-center gap-2 border-b border-brand-gold/20 pb-3">
               <User className="w-5 h-5 text-brand-gold" />
               <span>1. بيانات العميل والتواصل</span>
@@ -256,7 +259,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Delivery Address Panel */}
-          <div className="glass-panel p-6 rounded-3xl border border-brand-gold/20 space-y-4">
+          <div className="glass-panel p-4 sm:p-6 rounded-3xl border border-brand-gold/20 space-y-4">
             <h3 className="text-lg font-black text-brand-cream flex items-center gap-2 border-b border-brand-gold/20 pb-3">
               <Home className="w-5 h-5 text-brand-gold" />
               <span>2. عنوان التوصيل بالتفصيل</span>
@@ -369,7 +372,7 @@ export default function CheckoutPage() {
 
         {/* Right Summary Column */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 rounded-3xl border border-brand-gold/30 space-y-6 sticky top-24">
+          <div className="glass-panel p-4 sm:p-6 rounded-3xl border border-brand-gold/30 space-y-6 lg:sticky lg:top-24">
             <h3 className="text-lg font-black text-brand-cream flex items-center gap-2 border-b border-brand-gold/20 pb-3">
               <ShoppingBag className="w-5 h-5 text-brand-gold" />
               <span>ملخص الطلب والإجمالي</span>
@@ -378,31 +381,31 @@ export default function CheckoutPage() {
             {/* Items List */}
             <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
               {cart.map((item) => (
-                <div key={item.cart_item_id} className="flex items-center justify-between text-xs border-b border-brand-dark-700 pb-2">
-                  <div className="space-y-0.5">
-                    <span className="font-bold text-brand-cream block">{item.product.name_ar} × {item.quantity}</span>
+                <div key={item.cart_item_id} className="flex items-start justify-between gap-3 text-xs border-b border-brand-dark-700 pb-2">
+                  <div className="min-w-0 space-y-0.5">
+                    <span className="font-bold text-brand-cream block break-words">{item.product.name_ar} × {item.quantity}</span>
                     {item.selected_options && item.selected_options.length > 0 && (
                       <span className="text-[10px] text-brand-gold block">
                         {item.selected_options.map((o) => o.item_name).join(', ')}
                       </span>
                     )}
                   </div>
-                  <span className="font-black text-brand-gold">{formatCurrency(item.total_price)}</span>
+                  <span className="shrink-0 font-black text-brand-gold">{formatCurrency(item.total_price)}</span>
                 </div>
               ))}
             </div>
 
             {/* Cost Breakdown */}
             <div className="space-y-2 text-xs border-t border-brand-dark-700 pt-3">
-              <div className="flex justify-between text-brand-cream-muted">
+              <div className="flex items-start justify-between gap-3 text-brand-cream-muted">
                 <span>المجموع الفرعي:</span>
                 <span className="font-bold text-brand-cream">{formatCurrency(subtotal)}</span>
               </div>
-              <div className="flex justify-between text-brand-cream-muted">
-                <span>رسوم التوصيل ({selectedZone?.area_name}):</span>
+              <div className="flex items-start justify-between gap-3 text-brand-cream-muted">
+                <span className="break-words">رسوم التوصيل ({selectedZone?.area_name}):</span>
                 <span className="font-bold text-brand-gold">{formatCurrency(deliveryFee)}</span>
               </div>
-              <div className="flex justify-between text-base font-black text-brand-cream pt-3 border-t border-brand-gold/20">
+              <div className="flex items-start justify-between gap-3 text-base font-black text-brand-cream pt-3 border-t border-brand-gold/20">
                 <span>الإجمالي النهائي:</span>
                 <span className="text-xl text-brand-gold">{formatCurrency(grandTotal)}</span>
               </div>

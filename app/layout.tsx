@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Cairo, Tajawal } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
+import AnnouncementBar from '@/components/layout/AnnouncementBar';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import StickyMobileNav from '@/components/layout/StickyMobileNav';
@@ -49,16 +50,10 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className={`${cairo.variable} ${tajawal.variable}`}>
       <body className="bg-brand-dark-900 text-brand-cream antialiased min-h-screen flex flex-col selection:bg-brand-gold selection:text-brand-dark-900">
         <CartProvider>
-          {/* Global Announcement Bar */}
-          <div className="bg-gradient-to-r from-brand-red-dark via-brand-red to-brand-red-dark text-white text-xs md:text-sm font-bold py-2 text-center px-4 shadow-md flex items-center justify-center gap-2">
-            <span className="animate-pulse">🔥</span>
-            <span>طعم على أصوله! خدمة التوصيل السريع متوفرة لجميع المناطق - الخط الساخن: 01288883934</span>
-            <span className="animate-pulse">🔥</span>
-          </div>
-
+          <AnnouncementBar />
           <Header />
           
-          <main className="flex-1 pb-20 md:pb-0">{children}</main>
+          <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0">{children}</main>
 
           <Footer />
           <StickyMobileNav />
@@ -68,3 +63,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

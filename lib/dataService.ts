@@ -8,10 +8,17 @@ import {
   INITIAL_SETTINGS,
 } from './mockData';
 
+function isSupabaseConfigured(): boolean {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return false;
+  if (url.includes('demo') || key.includes('demo')) return false;
+  return true;
+}
+
 export async function getBranches(): Promise<Branch[]> {
   try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes('demo')) return INITIAL_BRANCHES;
+    if (!isSupabaseConfigured()) return INITIAL_BRANCHES;
 
     const { createClient } = await import('@/lib/supabase/client');
     const supabase = createClient();
@@ -25,8 +32,7 @@ export async function getBranches(): Promise<Branch[]> {
 
 export async function getCategories(): Promise<Category[]> {
   try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes('demo')) return INITIAL_CATEGORIES;
+    if (!isSupabaseConfigured()) return INITIAL_CATEGORIES;
 
     const { createClient } = await import('@/lib/supabase/client');
     const supabase = createClient();
@@ -40,8 +46,7 @@ export async function getCategories(): Promise<Category[]> {
 
 export async function getProducts(): Promise<Product[]> {
   try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes('demo')) return INITIAL_PRODUCTS;
+    if (!isSupabaseConfigured()) return INITIAL_PRODUCTS;
 
     const { createClient } = await import('@/lib/supabase/client');
     const supabase = createClient();
@@ -55,8 +60,7 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getDeliveryZones(branchId?: string): Promise<DeliveryZone[]> {
   try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes('demo')) {
+    if (!isSupabaseConfigured()) {
       if (!branchId) return INITIAL_DELIVERY_ZONES;
       return INITIAL_DELIVERY_ZONES.filter((dz) => dz.branch_id === branchId);
     }
@@ -79,8 +83,7 @@ export async function getDeliveryZones(branchId?: string): Promise<DeliveryZone[
 
 export async function getOffers(): Promise<Offer[]> {
   try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes('demo')) return INITIAL_OFFERS;
+    if (!isSupabaseConfigured()) return INITIAL_OFFERS;
 
     const { createClient } = await import('@/lib/supabase/client');
     const supabase = createClient();
@@ -94,8 +97,7 @@ export async function getOffers(): Promise<Offer[]> {
 
 export async function getRestaurantSettings(): Promise<RestaurantSettings> {
   try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes('demo')) return INITIAL_SETTINGS;
+    if (!isSupabaseConfigured()) return INITIAL_SETTINGS;
 
     const { createClient } = await import('@/lib/supabase/client');
     const supabase = createClient();

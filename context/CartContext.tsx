@@ -83,6 +83,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, isInitialized]);
 
+  // Sync customer state to LocalStorage
+  useEffect(() => {
+    if (!isInitialized) return;
+    try {
+      localStorage.setItem(
+        CUSTOMER_INFO_KEY,
+        JSON.stringify({ name: customerName, phone: customerPhone })
+      );
+    } catch (e) {
+      console.error('Failed to save customer info', e);
+    }
+  }, [customerName, customerPhone, isInitialized]);
+
   const setSelectedBranch = (branch: Branch) => {
     setSelectedBranchState(branch);
     try {
@@ -103,26 +116,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const setCustomerName = (name: string) => {
     setCustomerNameState(name);
-    try {
-      localStorage.setItem(
-        CUSTOMER_INFO_KEY,
-        JSON.stringify({ name, phone: customerPhone })
-      );
-    } catch (e) {
-      console.error('Failed to save customer name', e);
-    }
   };
 
   const setCustomerPhone = (phone: string) => {
     setCustomerPhoneState(phone);
-    try {
-      localStorage.setItem(
-        CUSTOMER_INFO_KEY,
-        JSON.stringify({ name: customerName, phone })
-      );
-    } catch (e) {
-      console.error('Failed to save customer phone', e);
-    }
   };
 
   const addToCart = (
@@ -130,6 +127,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     quantity: number,
     selectedOptions: CartItemOption[]
   ) => {
+    const safeQuantity = Math.max(1, Math.min(99, Math.floor(quantity) || 1));
     const optionsKey = selectedOptions
       .map((o) => o.item_id)
       .sort()
@@ -138,13 +136,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const optionExtra = selectedOptions.reduce((acc, o) => acc + (o.price_modifier || 0), 0);
     const unitPrice = product.base_price + optionExtra;
-    const totalPrice = unitPrice * quantity;
+    const totalPrice = unitPrice * safeQuantity;
 
     setCart((prevCart) => {
       const existingIndex = prevCart.findIndex((item) => item.cart_item_id === cartItemId);
       if (existingIndex > -1) {
         const updated = [...prevCart];
-        const newQty = updated[existingIndex].quantity + quantity;
+        const newQty = Math.min(99, updated[existingIndex].quantity + safeQuantity);
         updated[existingIndex] = {
           ...updated[existingIndex],
           quantity: newQty,
@@ -158,7 +156,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         {
           cart_item_id: cartItemId,
           product,
-          quantity,
+          quantity: safeQuantity,
           selected_options: selectedOptions,
           unit_price: unitPrice,
           total_price: totalPrice,
@@ -179,13 +177,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    const safeQuantity = Math.min(99, Math.max(1, Math.floor(newQuantity) || 1));
+
     setCart((prev) =>
       prev.map((item) => {
         if (item.cart_item_id === cartItemId) {
           return {
             ...item,
-            quantity: newQuantity,
-            total_price: item.unit_price * newQuantity,
+            quantity: safeQuantity,
+            total_price: item.unit_price * safeQuantity,
           };
         }
         return item;
@@ -197,8 +197,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart([]);
   };
 
-  const subtotal = cart.reduce((acc, item) => acc + item.total_price, 0);
-  const totalItemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const subtotal = React.useMemo(
+    () => cart.reduce((acc, item) => acc + item.total_price, 0),
+    [cart]
+  );
+  const totalItemCount = React.useMemo(
+    () => cart.reduce((acc, item) => acc + item.quantity, 0),
+    [cart]
+  );
 
   return (
     <CartContext.Provider

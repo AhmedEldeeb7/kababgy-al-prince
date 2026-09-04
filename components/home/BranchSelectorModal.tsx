@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, MapPin, Phone, Clock, CheckCircle2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Branch } from '@/types/database';
 import { INITIAL_BRANCHES } from '@/lib/mockData';
+import { getBranches } from '@/lib/dataService';
 
 interface BranchSelectorModalProps {
   isOpen: boolean;
@@ -13,6 +14,48 @@ interface BranchSelectorModalProps {
 
 export default function BranchSelectorModal({ isOpen, onClose }: BranchSelectorModalProps) {
   const { selectedBranch, setSelectedBranch } = useCart();
+  const [branches, setBranches] = useState<Branch[]>(INITIAL_BRANCHES);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadBranches() {
+      try {
+        const fetched = await getBranches();
+        if (isMounted && fetched && fetched.length > 0) {
+          setBranches(fetched);
+        }
+      } catch {
+        // Retain INITIAL_BRANCHES fallback
+      }
+    }
+    loadBranches();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
+
+  // Handle Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -22,8 +65,17 @@ export default function BranchSelectorModal({ isOpen, onClose }: BranchSelectorM
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-lg glass-panel rounded-3xl p-6 border border-brand-gold/30 shadow-2xl space-y-6">
+    <div
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="اختر الفرع الأقرب ليك"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-lg glass-panel rounded-3xl p-6 border border-brand-gold/30 shadow-2xl space-y-6"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-brand-gold/20 pb-4">
           <div className="flex items-center gap-2">
@@ -32,6 +84,7 @@ export default function BranchSelectorModal({ isOpen, onClose }: BranchSelectorM
           </div>
           <button
             onClick={onClose}
+            aria-label="إغلاق النافذة"
             className="p-1 rounded-full text-brand-cream-muted hover:text-brand-cream hover:bg-brand-dark-700 transition-colors"
           >
             <X className="w-6 h-6" />
@@ -44,7 +97,7 @@ export default function BranchSelectorModal({ isOpen, onClose }: BranchSelectorM
 
         {/* Branch List */}
         <div className="space-y-3">
-          {INITIAL_BRANCHES.map((branch) => {
+          {branches.map((branch) => {
             const isSelected = selectedBranch?.id === branch.id;
             return (
               <button
